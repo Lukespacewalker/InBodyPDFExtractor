@@ -13,20 +13,28 @@ internal enum Gender
 {
     Male, Female, Other
 }
+
+internal record DataWithNormalRange(double Value,double? Lower,double? Upper);
+
 internal class Person
 {
     public string Name { get; set; } = string.Empty;
     public string Id { get; set; } = string.Empty;
     public double Age { get; set; } = 0;
     public double Height { get; set; } = 0;
+    public DataWithNormalRange? Weight { get; set; }
     public DateTime DateTime { get; set; } = DateTime.MinValue;
     public Gender Gender { get; set; } = Gender.Other;
-
-    public double Weight { get; set; } = 0;
-    public double SkeletalMuscleMass { get; set; } = 0;
-    public double BodyFatMass { get; set; } = 0;
-    public double TotalBodyWater { get; set; } = 0;
-    public double BasalMetabolicRatio { get; set; } = 0;
+    // Body Composition
+    public DataWithNormalRange? SkeletalMuscleMass { get; set; }
+    public DataWithNormalRange? BodyFatMass { get; set; }
+    public DataWithNormalRange? TotalBodyWater { get; set; }
+    public DataWithNormalRange? FatFreeMass { get; set; }
+    // Obesity Diagnosis
+    public DataWithNormalRange? BodyMassIndex { get; set; }
+    public DataWithNormalRange? PercentBodyFatIndex { get; set; }
+    public DataWithNormalRange? WaistHipRatioIndex { get; set; }
+    public DataWithNormalRange? BasalMetabolicRatioIndex { get; set; }
 
     private static Dictionary<string, Action<Person, object>> setters = new Dictionary<string, Action<Person, object>>();
 

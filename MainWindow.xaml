@@ -7,6 +7,7 @@
         xmlns:rxui="http://reactiveui.net"
         xmlns:wpfui="clr-namespace:WPFUI.Controls;assembly=WPFUI"
         Style="{StaticResource UiWindow}"
+                      Focusable="True"
         mc:Ignorable="d"
         Title="MainWindow" Height="800" Width="1200">
     <Grid>
@@ -16,17 +17,16 @@
         <Grid
             x:Name="RootGrid"
             Grid.Row="1"
-            Margin="6,12,3,6">
+            Margin="16">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <!--<ColumnDefinition Width="Auto" />-->
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-
-            <Grid Grid.Row="0" Margin="6,0,0,24">
+            <!-- App Title -->
+            <Grid Grid.Row="0" Margin="0,0,0,16">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
@@ -46,15 +46,15 @@
                     Grid.Column="1"
                     Margin="12,0,0,0"
                     VerticalAlignment="Center">
-                    <TextBlock FontWeight="Medium" Text="Inbody PDF Extractor" />
+                    <TextBlock FontWeight="Medium" Text="InBody 230 PDF Extractor" />
                     <TextBlock Foreground="{DynamicResource TextFillColorTertiaryBrush}" Text="Beta" />
                 </StackPanel>
-                <TextBlock Margin="12,0,12,0" VerticalAlignment="Bottom" Grid.Column="2" Foreground="{DynamicResource TextFillColorTertiaryBrush}" Text="© 2022 Suttisak Denduangchai" />
+                <TextBlock Margin="12,0,0,0" VerticalAlignment="Bottom" Grid.Column="2" Foreground="{DynamicResource TextFillColorTertiaryBrush}" Text="© 2022 Suttisak Denduangchai" />
             </Grid>
 
             <rxui:RoutedViewHost 
             Grid.Row="1"
-            Margin="12,3,12,12"
+            Margin="0,0,0,0"
             x:Name="RoutedViewHost"
             HorizontalContentAlignment="Stretch"
             VerticalContentAlignment="Stretch" />

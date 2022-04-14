@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:InBodyPDFExtractor.View"
+             xmlns:controls="clr-namespace:InBodyPDFExtractor.Controls"
              xmlns:models="clr-namespace:InBodyPDFExtractor.Models"
              xmlns:wpfui="clr-namespace:WPFUI.Controls;assembly=WPFUI"
              xmlns:syncfusion="clr-namespace:Syncfusion.Windows.PdfViewer;assembly=Syncfusion.PdfViewer.WPF"
@@ -17,36 +18,40 @@
         </Grid.RowDefinitions>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="240"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <wpfui:Button Appearance="Secondary" VerticalAlignment="Bottom" Grid.Column="0" Name="Button_SelectFolder">Select Folder</wpfui:Button>
-            <wpfui:TextBox Placeholder="Selected Folder Path" IsEnabled="False" Margin="8,0,0,0" Grid.Column="1" x:Name="TextBox_FolderPath" />
-            <wpfui:Button Appearance="Secondary" Margin="8,0,0,0" VerticalAlignment="Bottom" Grid.Column="2" Name="Button_ExtractPDF">Extract Text</wpfui:Button>
+            <wpfui:Button Appearance="Secondary" VerticalAlignment="Stretch" Grid.Column="0" Name="Button_SelectFolder">Select Folder + Extract</wpfui:Button>
+            <wpfui:TextBox Placeholder="Selected Folder Path" IsEnabled="False" Margin="12,0,0,0" Grid.Column="1" x:Name="TextBox_FolderPath" />
+            <!--<wpfui:Button Appearance="Secondary" Margin="6,0,0,0" VerticalAlignment="Bottom" Grid.Column="2" Name="Button_ExtractPDF">Extract Text</wpfui:Button>-->
         </Grid>
-        <Grid Margin="0,8,0,0" Grid.Row="1" >
+        <Grid Margin="0,16,0,0" Grid.Row="1" >
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="240"/>
                 <ColumnDefinition Width="3*"/>
                 <ColumnDefinition Width="3*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="3*"/>
             </Grid.RowDefinitions>
-            <ListBox x:Name="ListView_FilesList" Grid.Column="0" Grid.RowSpan="2">
+            <ListBox x:Name="ListView_FilesList" Grid.Column="0" Grid.RowSpan="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding JobStatus, Mode=OneWay}"/>
-                            <TextBlock Text="{Binding FileName, Mode=OneWay}"/>
-                        </StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Ellipse Height="8" Width="8" Fill="{Binding JobStatus, Converter={StaticResource JobStatusToSolidColorBrushConverter},Mode=OneWay}"/>
+                            <TextBlock Grid.Column="1" Margin="12,0,0,0" TextWrapping="Wrap" Text="{Binding FileName, Mode=OneWay}"/>
+                        </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-            <syncfusion:PdfDocumentView Grid.Column="1" Grid.RowSpan="2" x:Name="PdfViewer"></syncfusion:PdfDocumentView>
-            <ListBox Margin="8,0,0,0" x:Name="ListView_DataList" Grid.Column="2">
+            <syncfusion:PdfDocumentView Background="#EE000000" Margin="12,0,0,0" Grid.Column="1" Grid.RowSpan="2" x:Name="PdfViewer"></syncfusion:PdfDocumentView>
+            <ListBox Margin="12,0,0,0" x:Name="ListView_DataList" Grid.Column="2">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
@@ -55,16 +60,199 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-            <Border Grid.Column="2" Grid.Row="1" Margin="8,8,0,0">
-                <StackPanel>
-                    <Label>Id</Label>
-                    <TextBox x:Name="TextBox_Id" />
-                    <Label>Name</Label>
-                    <TextBox x:Name="TextBox_Name" />
-                    <Label>Age</Label>
-                    <TextBox x:Name="TextBox_Age" />
-                </StackPanel>
-            </Border>
+            <ScrollViewer Grid.Column="2" Grid.Row="1" Margin="12,12,0,0">
+                <Border Padding="0,0,6,0">
+                    <StackPanel>
+                        <StackPanel.Resources>
+                            <Style TargetType="{x:Type controls:TextBox}">
+                                <Setter Property="Margin" Value="{StaticResource TextBoxMargin}"/>
+                            </Style>
+                        </StackPanel.Resources>
+                        <wpfui:Card Padding="12">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}">Personal Information</TextBlock>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="120"/>
+                                        <ColumnDefinition Width="12"/>
+                                        <ColumnDefinition Width="60"/>
+                                        <ColumnDefinition Width="12"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <controls:TextBox Header="Id" x:Name="TextBox_Id" />
+                                    <controls:TextBox Grid.Column="2" Header="Age" x:Name="TextBox_Age" />
+                                    <controls:TextBox Grid.Column="4" Header="Name" x:Name="TextBox_Name" />
+                                </Grid>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="12"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <controls:TextBox Header="Height" x:Name="TextBox_Height" Append="cm" />
+                                    <controls:TextBox Grid.Column="2" Header="Weight" x:Name="TextBox_Weight" Append="kg" />
+                                    <Label Grid.Column="3" VerticalAlignment="Bottom" Margin="12,0,6,6">Normal Range (</Label>
+                                    <controls:TextBox Grid.Column="4" Header=" " x:Name="TextBox_LowerWeight" Append="kg"  />
+                                    <Label Grid.Column="5" VerticalAlignment="Bottom" Margin="6,0,6,6">-</Label>
+                                    <controls:TextBox Grid.Column="6" Header=" " x:Name="TextBox_UpperWeight" Append="kg" />
+                                    <Label Grid.Column="7" VerticalAlignment="Bottom" Margin="6,0,0,6">)</Label>
+                                </Grid>
+                            </StackPanel>
+                        </wpfui:Card>
+                        <wpfui:Card Padding="12" Margin="0,12,0,0">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}">Body Composition</TextBlock>
+                                <TextBlock Margin="0,12,0,6" Style="{StaticResource H4}">Skeletal Muscle Mass</TextBlock>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <controls:TextBox Grid.Column="0" Header="Value" x:Name="TextBox_SkeletalMuscleMass" Append="kg" />
+                                    <Label Grid.Column="1" VerticalAlignment="Bottom" Margin="12,0,6,6">Normal Range (</Label>
+                                    <controls:TextBox Grid.Column="2" Header=" " x:Name="TextBox_LowerSkeletalMuscleMass" Append="kg"  />
+                                    <Label Grid.Column="3" VerticalAlignment="Bottom" Margin="6,0,6,6">-</Label>
+                                    <controls:TextBox Grid.Column="4" Header=" " x:Name="TextBox_UpperSkeletalMuscleMass" Append="kg" />
+                                    <Label Grid.Column="5" VerticalAlignment="Bottom" Margin="6,0,0,6">)</Label>
+                                </Grid>
+                                <TextBlock Margin="0,12,0,0" Style="{StaticResource H4}">Body Fat Mass</TextBlock>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <controls:TextBox Grid.Column="0" Header="Value" x:Name="TextBox_BodyFatMass" Append="kg" />
+                                    <Label Grid.Column="1" VerticalAlignment="Bottom" Margin="12,0,6,6">Normal Range (</Label>
+                                    <controls:TextBox Grid.Column="2" Header=" " x:Name="TextBox_LowerBodyFatMass" Append="kg"  />
+                                    <Label Grid.Column="3" VerticalAlignment="Bottom" Margin="6,0,6,6">-</Label>
+                                    <controls:TextBox Grid.Column="4" Header=" " x:Name="TextBox_UpperBodyFatMass" Append="kg" />
+                                    <Label Grid.Column="5" VerticalAlignment="Bottom" Margin="6,0,0,6">)</Label>
+                                </Grid>
+                                <TextBlock Margin="0,12,0,0" Style="{StaticResource H4}">Total Body Water</TextBlock>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <controls:TextBox Grid.Column="0" Header="Value" x:Name="TextBox_TotalBodyWater" Append="kg" />
+                                    <Label Grid.Column="1" VerticalAlignment="Bottom" Margin="12,0,6,6">Normal Range (</Label>
+                                    <controls:TextBox Grid.Column="2" Header=" " x:Name="TextBox_LowerTotalBodyWater" Append="kg"  />
+                                    <Label Grid.Column="3" VerticalAlignment="Bottom" Margin="6,0,6,6">-</Label>
+                                    <controls:TextBox Grid.Column="4" Header=" " x:Name="TextBox_UpperTotalBodyWater" Append="kg" />
+                                    <Label Grid.Column="5" VerticalAlignment="Bottom" Margin="6,0,0,6">)</Label>
+                                </Grid>
+                                <TextBlock Margin="0,12,0,0" Style="{StaticResource H4}">Fat Free Mass</TextBlock>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <controls:TextBox Grid.Column="0" Header="Value" x:Name="TextBox_FatFreeMass" Append="kg" />
+                                    <Label Grid.Column="1" VerticalAlignment="Bottom" Margin="12,0,6,6">Normal Range (</Label>
+                                    <controls:TextBox Grid.Column="2" Header=" " x:Name="TextBox_LowerFatFreeMass" Append="kg"  />
+                                    <Label Grid.Column="3" VerticalAlignment="Bottom" Margin="6,0,6,6">-</Label>
+                                    <controls:TextBox Grid.Column="4" Header=" " x:Name="TextBox_UpperFatFreeMass" Append="kg" />
+                                    <Label Grid.Column="5" VerticalAlignment="Bottom" Margin="6,0,0,6">)</Label>
+                                </Grid>
+                            </StackPanel>
+                        </wpfui:Card>
+                        <wpfui:Card Padding="12" Margin="0,12,0,0">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource H3}">Obesity Diagnosis</TextBlock>
+                                <TextBlock Margin="0,12,0,6" Style="{StaticResource H4}">Body Mass Index</TextBlock>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <controls:TextBox Grid.Column="0" Header="Value" x:Name="TextBox_BodyMassIndex" Append="kg/m^2" />
+                                    <Label Grid.Column="1" VerticalAlignment="Bottom" Margin="12,0,6,6">Normal Range (</Label>
+                                    <controls:TextBox Grid.Column="2" Header=" " x:Name="TextBox_LowerBodyMassIndex" Append="kg/m^2"  />
+                                    <Label Grid.Column="3" VerticalAlignment="Bottom" Margin="6,0,6,6">-</Label>
+                                    <controls:TextBox Grid.Column="4" Header=" " x:Name="TextBox_UpperBodyMassIndex" Append="kg/m^2" />
+                                    <Label Grid.Column="5" VerticalAlignment="Bottom" Margin="6,0,0,6">)</Label>
+                                </Grid>
+                                <TextBlock Margin="0,12,0,0" Style="{StaticResource H4}">Percent Body Fat</TextBlock>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <controls:TextBox Grid.Column="0" Header="Value" x:Name="TextBox_PercentBodyFat" Append="%" />
+                                    <Label Grid.Column="1" VerticalAlignment="Bottom" Margin="12,0,6,6">Normal Range (</Label>
+                                    <controls:TextBox Grid.Column="2" Header=" " x:Name="TextBox_LowerPercentBodyFat" Append="%"  />
+                                    <Label Grid.Column="3" VerticalAlignment="Bottom" Margin="6,0,6,6">-</Label>
+                                    <controls:TextBox Grid.Column="4" Header=" " x:Name="TextBox_UpperPercentBodyFat" Append="%" />
+                                    <Label Grid.Column="5" VerticalAlignment="Bottom" Margin="6,0,0,6">)</Label>
+                                </Grid>
+                                <TextBlock Margin="0,12,0,0" Style="{StaticResource H4}">Waist-Hip Ratio</TextBlock>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <controls:TextBox Grid.Column="0" Header="Value" x:Name="TextBox_WaistHipRatio" />
+                                    <Label Grid.Column="1" VerticalAlignment="Bottom" Margin="12,0,6,6">Normal Range (</Label>
+                                    <controls:TextBox Grid.Column="2" Header=" " x:Name="TextBox_LowerWaistHipRatio" />
+                                    <Label Grid.Column="3" VerticalAlignment="Bottom" Margin="6,0,6,6">-</Label>
+                                    <controls:TextBox Grid.Column="4" Header=" " x:Name="TextBox_UpperWaistHipRatio" />
+                                    <Label Grid.Column="5" VerticalAlignment="Bottom" Margin="6,0,0,6">)</Label>
+                                </Grid>
+                                <TextBlock Margin="0,12,0,0" Style="{StaticResource H4}">Basal Metabolic Ratio</TextBlock>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <controls:TextBox Grid.Column="0" Header="Value" x:Name="TextBox_BasalMetabolicRatio" Append="kcal" />
+                                    <Label Grid.Column="1" VerticalAlignment="Bottom" Margin="12,0,6,6">Normal Range (</Label>
+                                    <controls:TextBox Grid.Column="2" Header=" " x:Name="TextBox_LowerBasalMetabolicRatio" Append="kcal"  />
+                                    <Label Grid.Column="3" VerticalAlignment="Bottom" Margin="6,0,6,6">-</Label>
+                                    <controls:TextBox Grid.Column="4" Header=" " x:Name="TextBox_UpperBasalMetabolicRatio" Append="kcal" />
+                                    <Label Grid.Column="5" VerticalAlignment="Bottom" Margin="6,0,0,6">)</Label>
+                                </Grid>
+                            </StackPanel>
+                        </wpfui:Card>
+                    </StackPanel>
+                </Border>
+            </ScrollViewer>
         </Grid>
     </Grid>
 </local:PDFSelectionViewBase>

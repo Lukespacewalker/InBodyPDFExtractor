@@ -16,7 +16,7 @@ internal class PdfJobService
     public SourceCache<PdfJob, int> PdfJobs { get; private set; } = new(job => job.Id);
     public Dictionary<int, Person> People { get; private set; } = new();
     public Dictionary<int, List<ExtractionGroup>> ExtractionGroupsCollection { get; private set; } = new();
-    public Dictionary<int, List<TextLine>> ExtractedTextLineCollection { get; private set; } = new();
+    public Dictionary<int, List<TextLine>> ExtractedTextLinesCollection { get; private set; } = new();
 
 
     public async Task RunAllJobs()
@@ -40,7 +40,7 @@ internal class PdfJobService
             await Task.Yield();
             Dispatcher.CurrentDispatcher.Invoke(() => textLines = PdfJobUtilities.ExtractTextLineFromPDF(pdfJob));
             var extractionGroups = PdfJobUtilities.ExtractDataFromTextLines(textLines!);
-            ExtractedTextLineCollection.Add(jobId, textLines!);
+            ExtractedTextLinesCollection.Add(jobId, textLines!);
             ExtractionGroupsCollection.Add(jobId, extractionGroups);
             var person = Person.CreateFromExtractionGroup(extractionGroups);
             People.Add(jobId, person);

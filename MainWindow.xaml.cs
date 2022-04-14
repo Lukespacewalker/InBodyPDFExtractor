@@ -18,7 +18,7 @@ using System.Windows.Shapes;
 
 namespace InBodyPDFExtractor;
 
-public class MainWindowBase: ReactiveWindow<MainViewModel> { }
+public class MainWindowBase : ReactiveWindow<MainViewModel> { }
 
 /// <summary>
 /// Interaction logic for MainWindow.xaml
@@ -36,7 +36,7 @@ public partial class MainWindow : MainWindowBase
             this.OneWayBind(ViewModel, x => x.Router, x => x.RoutedViewHost.Router).DisposeWith(d);
             ViewModel.GoNext.Execute().Subscribe().DisposeWith(d);
         });
-
+        
         Loaded += (sender, args) =>
         {
             WPFUI.Appearance.Watcher.Watch(
@@ -45,5 +45,6 @@ public partial class MainWindow : MainWindowBase
               true                            // Whether to change accents automatically
             );
         };
+        
     }
 }
