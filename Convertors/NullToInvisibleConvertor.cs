@@ -40,7 +40,8 @@ internal class JobStatusToSolidColorBrushConverter : IValueConverter
     public JobStatusToSolidColorBrushConverter()
     {
         _solidColorBrushs.Add(JobStatus.NotStart, new SolidColorBrush(Colors.Transparent));
-        _solidColorBrushs.Add(JobStatus.Running, new SolidColorBrush(Colors.LightGoldenrodYellow));
+        _solidColorBrushs.Add(JobStatus.Queue, new SolidColorBrush(Colors.LightGoldenrodYellow));
+        _solidColorBrushs.Add(JobStatus.Running, new SolidColorBrush(Colors.LightYellow));
         _solidColorBrushs.Add(JobStatus.Finish, new SolidColorBrush(Colors.GreenYellow));
         _solidColorBrushs.Add(JobStatus.Error, new SolidColorBrush(Colors.OrangeRed));
     }

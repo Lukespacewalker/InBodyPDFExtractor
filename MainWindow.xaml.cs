@@ -34,7 +34,7 @@ public partial class MainWindow : MainWindowBase
         this.WhenActivated(d =>
         {
             this.OneWayBind(ViewModel, x => x.Router, x => x.RoutedViewHost.Router).DisposeWith(d);
-            ViewModel.GoNext.Execute().Subscribe().DisposeWith(d);
+            ViewModel.NavigateToSelectFolderPage.Execute().Subscribe().DisposeWith(d);
         });
         
         Loaded += (sender, args) =>

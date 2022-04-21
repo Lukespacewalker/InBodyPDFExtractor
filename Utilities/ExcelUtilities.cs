@@ -48,7 +48,7 @@ internal class ExcelUtilities
                 for (var row = 0; row < persons.Count; row++)
                 {
                     var person = persons[row];
-                    var actualRow = row + 1;
+                    var actualRow = row + 1 + 1 ; // 1-based index and must not overwrite heaer row
                     worksheet.Range[$"A{actualRow}"].Value = person.Id;
                     worksheet.Range[$"B{actualRow}"].Value2 = person.DateTime;
                     worksheet.Range[$"C{actualRow}"].Value = person.Name;

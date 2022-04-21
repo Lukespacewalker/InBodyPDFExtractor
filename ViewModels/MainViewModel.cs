@@ -1,4 +1,5 @@
-﻿using InBodyPDFExtractor.View;
+﻿using InBodyPDFExtractor.Services;
+using InBodyPDFExtractor.View;
 using ReactiveUI;
 using Splat;
 using System;
@@ -13,49 +14,16 @@ namespace InBodyPDFExtractor.ViewModels;
 
 public class MainViewModel : ReactiveObject, IScreen
 {
-    // The Router associated with this Screen.
-    // Required by the IScreen interface.
-    public RoutingState Router { get; }
+    private readonly NavigationService? navigationService;
 
-    // The command that navigates a user to first view model.
-    public ReactiveCommand<Unit, IRoutableViewModel> GoNext { get; }
+    public RoutingState Router => navigationService!.Router;
 
-    // The command that navigates a user back.
-    public ReactiveCommand<Unit, IRoutableViewModel?> GoBack { get; }
+    public ReactiveCommand<Unit, IRoutableViewModel> NavigateToSelectFolderPage { get; }
 
-    public MainViewModel()
+    public MainViewModel(NavigationService? navigationService = null)
     {
-        // Initialize the Router.
-        Router = new RoutingState();
+        this.navigationService = navigationService ?? Locator.Current.GetService<NavigationService>();
 
-        // Router uses Splat.Locator to resolve views for
-        // view models, so we need to register our views
-        // using Locator.CurrentMutable.Register* methods.
-        //
-        // Instead of registering views manually, you 
-        // can use custom IViewLocator implementation,
-        // see "View Location" section for details.
-        //
-        Locator.CurrentMutable.Register(() => new PDFSelectionView(), typeof(IViewFor<PDFSelectionViewModel>));
-
-        // Manage the routing state. Use the Router.Navigate.Execute
-        // command to navigate to different view models. 
-        //
-        // Note, that the Navigate.Execute method accepts an instance 
-        // of a view model, this allows you to pass parameters to 
-        // your view models, or to reuse existing view models.
-        //
-        GoNext = ReactiveCommand.CreateFromObservable(() => Router.Navigate.Execute(new PDFSelectionViewModel()));
-
-        // You can also ask the router to go back. One option is to 
-        // execute the default Router.NavigateBack command. Another
-        // option is to define your own command with custom
-        // canExecute condition as such:
-        var canGoBack = this
-            .WhenAnyValue(x => x.Router.NavigationStack.Count)
-            .Select(count => count > 0);
-        GoBack = ReactiveCommand.CreateFromObservable(
-            () => Router.NavigateBack.Execute(Unit.Default),
-            canGoBack);
+        NavigateToSelectFolderPage = ReactiveCommand.CreateFromObservable(() => Router.Navigate.Execute(new SelectFolderViewModel()));
     }
 }

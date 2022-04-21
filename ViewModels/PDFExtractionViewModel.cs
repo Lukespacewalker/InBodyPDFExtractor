@@ -23,10 +23,10 @@ using InBodyPDFExtractor.Services;
 
 namespace InBodyPDFExtractor.ViewModels;
 
-public class PDFSelectionViewModel : ReactiveObject, IRoutableViewModel, IActivatableViewModel
+public class PDFExtractionViewModel : ReactiveObject, IRoutableViewModel, IActivatableViewModel
 {
     #region RXUI
-    public string? UrlPathSegment => "Main";
+    public string? UrlPathSegment => "PDFExtraction";
 
     public IScreen HostScreen { get; }
 
@@ -34,7 +34,8 @@ public class PDFSelectionViewModel : ReactiveObject, IRoutableViewModel, IActiva
     #endregion
 
     private readonly PdfJobService pdfJobService;
-    [Reactive] internal string SelectedFolderPart { get; private set; } = string.Empty;
+    private readonly NavigationService navigationService;
+    [Reactive] internal bool IsPDFViewerLoading { get; set; }
     [Reactive] internal PdfJob? SelectedPDFJob { get; private set; }
 
     [ObservableAsProperty]
@@ -45,23 +46,35 @@ public class PDFSelectionViewModel : ReactiveObject, IRoutableViewModel, IActiva
     [ObservableAsProperty]
     internal Person SelectedPDFPerson { get; }
 
-    internal ReactiveCommand<Unit, Unit> SelectFolder { get; private set; }
-    internal ReactiveCommand<Unit, Unit> ExtractPDFs { get; private set; }
+    internal ReactiveCommand<Unit, IRoutableViewModel?> GoBack { get; private set; }
+
+    internal ReactiveCommand<Unit, Unit> SaveXlsx { get; private set; }
+
 
     internal ObservableCollectionExtended<PdfJob> PdfJobs = new();
 
+    internal IObservable<double>? Progress { get; private set; }
 
-    internal PDFSelectionViewModel(IScreen? screen = null, PdfJobService? pdfJobService = null)
+
+    internal PDFExtractionViewModel(
+        IScreen? screen = null,
+        PdfJobService? pdfJobService = null,
+        NavigationService? navigationService = null)
     {
-        HostScreen = screen ?? Locator.Current.GetService<IScreen>()!;
         this.pdfJobService = pdfJobService ?? Locator.Current.GetService<PdfJobService>()!;
+        this.navigationService = navigationService ?? Locator.Current.GetService<NavigationService>()!;
+        HostScreen = screen ?? Locator.Current.GetService<IScreen>()!;
+        var canIssueCommand = this.WhenAnyValue(vm => vm.pdfJobService.IsWorking).Select(v => !v);
+        GoBack = ReactiveCommand.CreateFromObservable<Unit, IRoutableViewModel?>(_ => this.navigationService.GoBack.Execute(), canIssueCommand);
 
-        SelectFolder = ReactiveCommand.CreateFromTask(SelectFolderImpl);
-        //ExtractPDFs = ReactiveCommand.CreateFromTask(this.pdfJobService.RunAllJobs, outputScheduler: RxApp.MainThreadScheduler);
+        SaveXlsx = ReactiveCommand.CreateFromTask(ExportToExcelImpl, canIssueCommand);
 
         this.WhenActivated(d =>
         {
-            this.pdfJobService.PdfJobs.Connect()
+            this.pdfJobService.RunAllJobs();
+            Progress = this.WhenAnyValue(vm => vm.pdfJobService.Percentage);
+
+            this.pdfJobService.PdfJobs.Connect().AutoRefresh().Filter(pdfJob => pdfJob.ToBeWork == true)
                 .ObserveOnDispatcher()
                 .Bind(PdfJobs)
                 .Subscribe()
@@ -86,28 +99,23 @@ public class PDFSelectionViewModel : ReactiveObject, IRoutableViewModel, IActiva
                 .DisposeWith(d);
         });
     }
-    private async Task SelectFolderImpl()
+
+    private async Task ExportToExcelImpl()
     {
-        VistaFolderBrowserDialog dialog = new();
+        VistaSaveFileDialog dialog = new()
+        {
+            Filter = "xlsx|*.xlsx",
+            AddExtension = true,
+            OverwritePrompt = true,
+            DefaultExt = ".xlsx"
+        };
         if (dialog.ShowDialog() ?? false)
         {
-            SelectedFolderPart = dialog.SelectedPath;
-            EnumerateFolder();
-            await pdfJobService.RunAllJobs();
+            var filePath =dialog.FileName;
+            await Task.Run(async ()=>
+                await ExcelUtilities.WriteExcel(filePath, this.pdfJobService.People.Values.ToList())
+            );
         }
-    }
-    private void EnumerateFolder()
-    {
-        pdfJobService.PdfJobs.Clear();
-        var filesPath = Directory.GetFiles(SelectedFolderPart).Select((file,index) =>
-        {
-            return new PdfJob
-            {
-                Id = index,
-                FileName = Path.GetFileName(file),
-                AbsolutePath = file
-            };
-        });
-        pdfJobService.PdfJobs.AddOrUpdate(filesPath);
+
     }
 }

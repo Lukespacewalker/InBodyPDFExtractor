@@ -21,6 +21,7 @@ namespace InBodyPDFExtractor
             Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("NjA1ODE4QDMyMzAyZTMxMmUzMFBYS29kVUwyTUo1Q2JBSHR0RVBjODg5czlrQUs2ZkZKcXYzYWRZZUtlNUE9");
             Locator.CurrentMutable.RegisterViewsForViewModels(Assembly.GetCallingAssembly());
             Locator.CurrentMutable.RegisterConstant(new Services.PdfJobService());
+            Locator.CurrentMutable.RegisterConstant(new Services.NavigationService());
         }
     }
 }

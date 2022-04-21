@@ -8,8 +8,8 @@
         xmlns:wpfui="clr-namespace:WPFUI.Controls;assembly=WPFUI"
         Style="{StaticResource UiWindow}"
                       Focusable="True"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="800" Width="1200">
+        mc:Ignorable="d" Height="800"
+        Title="MainWindow" Width="1200">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>

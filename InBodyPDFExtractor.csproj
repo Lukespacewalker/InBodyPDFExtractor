@@ -10,6 +10,10 @@
   <ItemGroup>
     <None Remove="Assets\icon.png" />
     <None Remove="Assets\icon.svg" />
+    <None Remove="Assets\icons8-back-96.png" />
+    <None Remove="Assets\icons8-microsoft-excel-2019-96.png" />
+    <None Remove="Assets\icons8-opened-folder-96.png" />
+    <None Remove="Assets\icons8-process-96.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -37,6 +41,10 @@
 
   <ItemGroup>
     <Resource Include="Assets\icon.png" />
+    <Resource Include="Assets\icons8-back-96.png" />
+    <Resource Include="Assets\icons8-microsoft-excel-2019-96.png" />
+    <Resource Include="Assets\icons8-opened-folder-96.png" />
+    <Resource Include="Assets\icons8-process-96.png" />
   </ItemGroup>
 
 </Project>
